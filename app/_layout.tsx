@@ -1,24 +1,27 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { Slot, useRouter, useSegments } from 'expo-router';
+import { useEffect, useRef } from 'react';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const segments = useSegments();
+  const router = useRouter();
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    // Wait until first render finishes
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+
+    const inAuthGroup = (segments as string[]).includes("(auth)");
+    
+
+    if (!inAuthGroup) {
+      router.replace("../(auth)/login");
+      console.log("From here2")
+    }
+  }, [router, segments]);
+
+  return <Slot />;
 }
