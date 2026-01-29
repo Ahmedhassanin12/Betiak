@@ -7,7 +7,7 @@ export default function OnboardingLayout() {
 
   // Must be logged in to see onboarding
   if (!user) {
-    return <Redirect href="./(auth)" />;
+    return <Redirect href="/(auth)" />;
   }
 
   return (

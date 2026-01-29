@@ -35,7 +35,7 @@ export default function EmailLoginScreen() {
       //TODO:: Send magic link or proceed to onboarding
       // For now, we'll navigate to the onboarding flow
       router.push({
-        pathname: "./(onboarding)/basic-profile",
+        pathname: "/basic-profile",
         params: { email: data.email }
       });
     } catch (error: any) {
