@@ -8,49 +8,63 @@ import { Button, HelperText, Text, TextInput } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as z from 'zod';
 
-// Validation Schemas
-const loginSchema = z.object({
+
+const signUpSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
   email: z.string().email('Please enter a valid email'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string().min(1, 'Please confirm your password'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
 
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
-type LoginFormData = z.infer<typeof loginSchema>;
-
-
-export default function LoginScreen() {
-  // const { signInWithEmail } = useAuth();
+export default function SignUpScreen() {
+  // const { signUpWithEmail } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  // Form for Login
-  const loginForm = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+
+
+  // Form for Sign Up
+  const signUpForm = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
+      fullName: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
-
-  const signInWithEmail = async (email: string, password: string) => {
+  const signUpWithEmail = async (email: string, password: string, options: { full_name: string, country: string }) => {
     return { error: null as { message: string } | null, data: { user: { email } } };
   }
-
-  const handleAuth = async (data: LoginFormData) => {
+  const handleAuth = async (data: SignUpFormData) => {
     setLoading(true);
     try {
 
-      const loginData = data;
-      const { error, data: loginDataResult } = await signInWithEmail(loginData.email, loginData.password);
+      const signUpData = data;
+      const { error, data: signUpDataResult } = await signUpWithEmail(signUpData.email, signUpData.password, {
+        full_name: signUpData.fullName,
+        country: 'Egypt',
+      });
 
       if (error) {
-        Alert.alert('Login Error', error.message);
+        Alert.alert('Sign Up Error', error.message);
       } else {
-        console.log({ loginDataResult });
-        // router.replace("/(main)/homeScreen");
+        Alert.alert(
+          'Success',
+          'Account created! Please check your email to verify your account.'
+        );
+
+        console.log({ signUpDataResult })
+
+        signUpForm.reset();
       }
 
     } catch (error: any) {
@@ -61,7 +75,7 @@ export default function LoginScreen() {
   };
 
   const toggleMode = () => {
-    router.replace("/signup");
+    router.replace("/login")
   };
 
   const theme = {
@@ -108,18 +122,51 @@ export default function LoginScreen() {
           {/* Form Card */}
           <View style={[styles.formCard, { backgroundColor: theme.surface }]}>
             <Text style={[styles.title, { color: theme.text }]}>
-              Welcome Back
+              Create Account
             </Text>
             <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
-              Sign in to continue your journey
+              Join the Halal Match community
+
             </Text>
 
+            {/* Full Name (Sign Up only) */}
+
+            <Controller
+              control={signUpForm.control}
+              name="fullName"
+              render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+                <>
+                  <TextInput
+                    label="Full Name"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    mode="outlined"
+                    style={styles.input}
+                    outlineColor={theme.border}
+                    activeOutlineColor={theme.primary}
+                    textColor={theme.text}
+                    theme={{
+                      colors: {
+                        background: theme.inputBackground,
+                        placeholder: theme.textSecondary,
+                      }
+                    }}
+                    left={<TextInput.Icon icon="account" color={theme.textSecondary} />}
+                    error={!!error}
+                  />
+                  <HelperText type="error" visible={!!error}>
+                    {error?.message}
+                  </HelperText>
+                </>
+              )}
+            />
 
 
             {/* Email */}
 
             <Controller
-              control={loginForm.control}
+              control={signUpForm.control}
               name="email"
               render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                 <>
@@ -135,6 +182,8 @@ export default function LoginScreen() {
                     outlineColor={theme.border}
                     activeOutlineColor={theme.primary}
                     textColor={theme.text}
+
+
                     theme={{
                       colors: {
                         background: theme.inputBackground,
@@ -155,7 +204,7 @@ export default function LoginScreen() {
             {/* Password */}
 
             <Controller
-              control={loginForm.control}
+              control={signUpForm.control}
               name="password"
               render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                 <>
@@ -169,9 +218,8 @@ export default function LoginScreen() {
                     secureTextEntry={!showPassword}
                     outlineColor={theme.border}
                     activeOutlineColor={theme.primary}
-                    autoCapitalize="none"
-
                     textColor={theme.text}
+                    autoCapitalize="none"
                     theme={{
                       colors: {
                         background: theme.inputBackground,
@@ -196,36 +244,76 @@ export default function LoginScreen() {
             />
 
 
+            {/* Confirm Password (Sign Up only) */}
+
+            <Controller
+              control={signUpForm.control}
+              name="confirmPassword"
+              render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+                <>
+                  <TextInput
+                    label="Confirm Password"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    mode="outlined"
+                    style={styles.input}
+                    secureTextEntry={!showPassword}
+                    outlineColor={theme.border}
+                    activeOutlineColor={theme.primary}
+                    textColor={theme.text}
+                    theme={{
+                      colors: {
+                        background: theme.inputBackground,
+                        placeholder: theme.textSecondary,
+                      }
+                    }}
+                    left={<TextInput.Icon icon="lock-check" color={theme.textSecondary} />}
+                    error={!!error}
+                  />
+                  <HelperText type="error" visible={!!error}>
+                    {error?.message}
+                  </HelperText>
+                </>
+              )}
+            />
 
 
             {/* Submit Button */}
             <Button
               mode="contained"
-              onPress={loginForm.handleSubmit(handleAuth)}
+              onPress={signUpForm.handleSubmit(handleAuth)}
               loading={loading}
               disabled={loading}
               style={[styles.submitButton, { backgroundColor: theme.primary }]}
               contentStyle={styles.submitButtonContent}
               labelStyle={styles.submitButtonLabel}
             >
-              {'Sign In'}
+              Create Account
             </Button>
 
             {/* Toggle Sign Up/Login */}
             <View style={styles.toggleContainer}>
               <Text style={[styles.toggleText, { color: theme.textSecondary }]}>
-                Don&apos;t have an account?
+                Already have an account?
+
               </Text>
               <Button
                 mode="text"
                 onPress={toggleMode}
                 labelStyle={[styles.toggleButtonLabel, { color: theme.primaryLight }]}
               >
-                Sign Up
+                Sign In
               </Button>
             </View>
 
-
+            {/* Islamic Notice */}
+            <View style={[styles.islamicNotice, { backgroundColor: theme.noticeBackground }]}>
+              <Ionicons name="information-circle" size={16} color={theme.primaryLight} />
+              <Text style={[styles.noticeText, { color: theme.primaryLight }]}>
+                All profiles are verified to maintain Islamic values
+              </Text>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>

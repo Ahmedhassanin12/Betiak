@@ -21,7 +21,7 @@ const Welcome = () => {
   };
 
   const handleEmailSignIn = () => {
-    router.push('/(auth)/login');
+    router.push('/email-login');
   };
 
   return (
