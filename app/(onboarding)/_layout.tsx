@@ -1,14 +1,13 @@
-import { useAuth } from '@/providers/AuthProvider';
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 
 
 export default function OnboardingLayout() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
 
   // Must be logged in to see onboarding
-  if (!user) {
-    return <Redirect href="/(auth)" />;
-  }
+  // if (!user) {
+  //   return <Redirect href="/(auth)" />;
+  // }
 
   return (
     <Stack
@@ -22,7 +21,7 @@ export default function OnboardingLayout() {
       <Stack.Screen name="profile-details" />
       <Stack.Screen name="relationship-goals" />
       <Stack.Screen name="photos" />
-      <Stack.Screen name="verification" />
+      <Stack.Screen name="phone-verification" />
     </Stack>
   );
 }

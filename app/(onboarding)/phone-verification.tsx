@@ -28,10 +28,7 @@ export default function VerificationScreen() {
     router.replace('../(tabs)');
   };
 
-  const handleSkip = async () => {
-    await updateProfile({ onboarding_completed: true });
-    router.replace('../(tabs)');
-  };
+
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -71,9 +68,7 @@ export default function VerificationScreen() {
         </>
       )}
 
-      <Button mode="text" onPress={handleSkip} style={styles.skipButton}>
-        Skip - I&apos;ll verify later
-      </Button>
+
     </SafeAreaView>
   );
 }
@@ -83,7 +78,9 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 8 },
   subtitle: { fontSize: 14, marginBottom: 32 },
   input: { marginBottom: 24 },
-  button: {},
+  button: {
+    marginTop: "auto",
+  },
   resendButton: { marginTop: 16 },
-  skipButton: { marginTop: 32 },
+
 });

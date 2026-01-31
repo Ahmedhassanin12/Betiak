@@ -1,11 +1,13 @@
+import { Button } from '@/components/common/Button';
+import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/providers/AuthProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, ScrollView, StatusBar, StyleSheet, View, useColorScheme } from 'react-native';
-import { Button, HelperText, Text, TextInput } from 'react-native-paper';
+import { Alert, Image, ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
+import { HelperText, Text, TextInput } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as z from 'zod';
 
@@ -17,6 +19,8 @@ const emailSchema = z.object({
 type EmailFormData = z.infer<typeof emailSchema>;
 
 export default function EmailLoginScreen() {
+  const theme = useTheme();
+
   const { signInWithOTP } = useAuth();
   const [loading, setLoading] = useState(false);
   const colorScheme = useColorScheme();
@@ -38,6 +42,7 @@ export default function EmailLoginScreen() {
         pathname: "/basic-profile",
         params: { email: data.email }
       });
+
     } catch (error: any) {
       Alert.alert('Error', error.message);
     } finally {
@@ -45,29 +50,13 @@ export default function EmailLoginScreen() {
     }
   };
 
-  const theme = {
-    background: isDark ? '#121212' : '#f5f5f5',
-    surface: isDark ? '#1e1e1e' : '#ffffff',
-    text: isDark ? '#ffffff' : '#1a1a1a',
-    textSecondary: isDark ? '#b0b0b0' : '#666666',
-    primary: '#667eea',
-    primaryLight: isDark ? '#8b9cef' : '#667eea',
-    border: isDark ? '#333333' : '#e0e0e0',
-    inputBackground: isDark ? '#2a2a2a' : '#ffffff',
-    accent: '#f93b7a',
-    statusBar: isDark ? '#1e1e1e' : '#667eea',
-  };
+
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        animated={true}
-        backgroundColor={theme.statusBar}
-        barStyle={isDark ? 'light-content' : 'dark-content'}
-        showHideTransition="fade"
-      />
+
       <SafeAreaView
-        style={[styles.container, { backgroundColor: theme.background }]}
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
         edges={['left', 'right', 'top']}
       >
         <ScrollView
@@ -79,25 +68,26 @@ export default function EmailLoginScreen() {
             <Button
               mode="text"
               onPress={() => router.back()}
-              textColor={theme.text}
-              icon={() => <Ionicons name="arrow-back" size={24} color={theme.text} />}
+              textColor={theme.colors.text}
+              buttonColor='transparent'
+              icon={() => <Ionicons name="arrow-back" size={20} color={theme.colors.text} />}
             >
               Back
             </Button>
           </View>
 
           {/* Content */}
-          <View style={[styles.content, { backgroundColor: theme.surface }]}>
+          <View style={[styles.content, { backgroundColor: theme.colors.surface }]}>
             {/* Logo/Icon */}
-            <View style={[styles.iconContainer, { backgroundColor: theme.primary + '20' }]}>
-              <Ionicons name="heart" size={48} color={theme.primary} />
+            <View style={[styles.iconContainer, { backgroundColor: theme.colors.primary + '20' }]}>
+              <Image style={styles.logo} source={require("@/assets/images/betiak.png")} />
             </View>
 
-            <Text style={[styles.title, { color: theme.text }]}>
+            <Text style={[styles.title, { color: theme.colors.text }]}>
               Find Your Match
             </Text>
 
-            <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
+            <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
               Enter your email to begin your journey to a meaningful halal relationship
             </Text>
 
@@ -116,16 +106,16 @@ export default function EmailLoginScreen() {
                     style={styles.input}
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    outlineColor={theme.border}
-                    activeOutlineColor={theme.primary}
-                    textColor={theme.text}
+                    outlineColor={theme.colors.border}
+                    activeOutlineColor={theme.colors.primary}
+                    textColor={theme.colors.text}
                     theme={{
                       colors: {
-                        background: theme.inputBackground,
-                        placeholder: theme.textSecondary,
+                        background: theme.colors.surface,
+                        placeholder: theme.colors.textSecondary,
                       }
                     }}
-                    left={<TextInput.Icon icon="email-outline" color={theme.textSecondary} />}
+                    left={<TextInput.Icon icon="email-outline" color={theme.colors.textSecondary} />}
                     error={!!error}
                   />
                   <HelperText type="error" visible={!!error}>
@@ -141,17 +131,18 @@ export default function EmailLoginScreen() {
               onPress={emailForm.handleSubmit(handleEmailSubmit)}
               loading={loading}
               disabled={loading}
-              style={[styles.submitButton, { backgroundColor: theme.primary }]}
+              style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}
               contentStyle={styles.submitButtonContent}
               labelStyle={styles.submitButtonLabel}
+              buttonColor={theme.colors.primary}
             >
               Continue
             </Button>
 
             {/* Privacy Notice */}
-            <View style={[styles.privacyNotice, { backgroundColor: theme.background }]}>
-              <Ionicons name="shield-checkmark" size={16} color={theme.primaryLight} />
-              <Text style={[styles.privacyText, { color: theme.textSecondary }]}>
+            <View style={[styles.privacyNotice, { backgroundColor: theme.colors.surface }]}>
+              <Ionicons name="shield-checkmark" size={16} color={theme.colors.primary} />
+              <Text style={[styles.privacyText, { color: theme.colors.textSecondary }]}>
                 Your information is secure and private. We maintain Islamic values in all interactions.
               </Text>
             </View>
@@ -169,16 +160,24 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 40,
+    paddingHorizontal: 12,
   },
   header: {
-    paddingTop: 20,
-    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingHorizontal: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  logo: {
+    objectFit: "contain",
+    width: 150,
+    height: 100,
+
   },
   content: {
     flex: 1,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: 40,
+    borderRadius: 30,
+    marginTop: 10,
     padding: 24,
     alignItems: 'center',
     shadowColor: '#000',
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 5,
+    elevation: 2,
   },
   iconContainer: {
     width: 100,

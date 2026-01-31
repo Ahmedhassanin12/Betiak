@@ -16,7 +16,7 @@ export default function ProfileDetailsScreen() {
       bio,
       onboarding_completed: true
     });
-    router.replace('../(tabs)');
+    router.replace('/relationship-goals');
   };
 
   return (
@@ -32,7 +32,7 @@ export default function ProfileDetailsScreen() {
         style={styles.input}
       />
 
-      <Button mode="contained" onPress={handleComplete}>
+      <Button mode="contained" onPress={handleComplete} style={styles.button}>
         Complete Profile
       </Button>
     </SafeAreaView>
@@ -43,4 +43,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 24 },
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 32 },
   input: { marginBottom: 24 },
+  button: { marginTop: 'auto' },
 });

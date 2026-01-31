@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, ScrollView, StatusBar, StyleSheet, View, useColorScheme } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
 import { Button, Chip, ProgressBar, Text } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
@@ -68,12 +68,7 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        animated={true}
-        backgroundColor={theme.statusBar}
-        barStyle={isDark ? 'light-content' : 'dark-content'}
-        showHideTransition="fade"
-      />
+
       <SafeAreaView
         style={[styles.container, { backgroundColor: theme.background }]}
         edges={['left', 'right', 'top']}

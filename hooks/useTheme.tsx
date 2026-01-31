@@ -1,19 +1,24 @@
-import { COLORS } from '@/constants/theme';
-import { useColorScheme } from 'react-native';
+import { useAppTheme } from '@/providers/ThemeProvider';
+import { useTheme as usePaperTheme } from 'react-native-paper';
 
 export function useTheme() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const paperTheme = usePaperTheme();
+  const { isDark } = useAppTheme();
 
   return {
+    ...paperTheme,
     isDark,
     colors: {
-      primary: COLORS.primary,
-      accent: COLORS.accent,
-      background: isDark ? COLORS.dark.background : COLORS.light.background,
-      surface: isDark ? COLORS.dark.surface : COLORS.light.surface,
-      text: isDark ? COLORS.dark.text : COLORS.light.text,
-      textSecondary: isDark ? COLORS.dark.textSecondary : COLORS.light.textSecondary,
+      ...paperTheme.colors,
+      // Easy access to common colors
+      primary: paperTheme.colors.primary,
+      accent: paperTheme.colors.secondary,
+      background: paperTheme.colors.background,
+      surface: paperTheme.colors.surface,
+      text: paperTheme.colors.onSurface,
+      textSecondary: paperTheme.colors.onSurfaceVariant,
+      border: paperTheme.colors.outline,
+      error: paperTheme.colors.error,
     },
   };
 }

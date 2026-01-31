@@ -1,10 +1,11 @@
+import { Button } from '@/components/common/Button';
 import { useTheme } from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, IconButton, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PhotosScreen() {
@@ -30,7 +31,7 @@ export default function PhotosScreen() {
 
   const handleContinue = () => {
     //TODO Upload photos to Supabase Storage here
-    router.push('/relationship-goals');
+    router.push('/phone-verification');
   };
 
   const handleSkip = () => {
@@ -39,7 +40,7 @@ export default function PhotosScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <ScrollView>
+      <ScrollView style={styles.wrapper} contentContainerStyle={{ flexGrow: 1 }}>
         <Text style={[styles.title, { color: colors.text }]}>Add Photos</Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
           Add at least 3 photos. First photo will be your profile picture.
@@ -64,14 +65,16 @@ export default function PhotosScreen() {
           ))}
 
           {photos.length < 6 && (
-            <Button
-              mode="outlined"
-              onPress={pickImage}
-              style={styles.addButton}
-              icon={() => <Ionicons name="camera" size={32} color={colors.primary} />}
-            >
-              Add Photo
-            </Button>
+            <View style={styles.addButtonWrapper}>
+              <Button
+                mode="text"
+                onPress={pickImage}
+                buttonColor="transparent"
+                icon={() => <Ionicons name="camera" size={18} color={colors.primary} />}
+              >
+                Add Photo
+              </Button>
+            </View>
           )}
         </View>
 
@@ -84,7 +87,7 @@ export default function PhotosScreen() {
           Continue ({photos.length}/6)
         </Button>
 
-        <Button mode="text" onPress={handleSkip} style={styles.skipButton}>
+        <Button textColor='#fff' mode="text" onPress={handleSkip} style={styles.skipButton}>
           Skip for now
         </Button>
       </ScrollView>
@@ -94,6 +97,7 @@ export default function PhotosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 24 },
+  wrapper: { flex: 1 },
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 8 },
   subtitle: { fontSize: 14, marginBottom: 24 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   primaryText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
-  addButton: { width: '30%', aspectRatio: 1, justifyContent: 'center' },
-  continueButton: { marginTop: 32 },
+  addButtonWrapper: { width: 120, height: 120, borderWidth: 2, borderStyle: 'dashed', borderColor: '#ccc', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  continueButton: { marginTop: 'auto' },
   skipButton: { marginTop: 16 },
 });

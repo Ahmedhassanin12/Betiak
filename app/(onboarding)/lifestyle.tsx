@@ -58,5 +58,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 24 },
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 32 },
   chipRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
-  button: { marginTop: 32 },
+  button: { marginTop: 'auto' },
 });
